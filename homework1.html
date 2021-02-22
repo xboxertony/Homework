@@ -1,0 +1,169 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            color: black;
+        }
+        nav{
+            display: flex;
+            background-color:white;
+            padding: 20px;
+        }
+        nav a{
+            text-decoration: none;
+        }
+        .bar{
+            margin-left: auto;
+        }
+        #title{
+            font-weight: 900;
+        }
+        .welcome{
+            height: 300px;
+            background-color: blanchedalmond;
+            text-align: center;
+            line-height: 300px;
+            font-size: 40px;
+            font-weight: 900;
+        }
+        .img_block .fakeimg{
+            width: 100%;
+            height: 300px;
+            background-image: url("https://picsum.photos/500/500");
+            background-position: center;
+            background-size: cover;
+        }
+        .img_block .img{
+            margin: 10px;
+        }
+        .img_block{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .img_b{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 1200px;
+        }
+        #burger_l,#burger{
+            display: none;
+        }
+        .img{
+            width: 23%;
+            text-align: center;
+        }
+        .img p{
+            background-color: wheat;
+        }
+        .icon img{
+            height:30px;
+            width: 30px;
+        }
+        @media screen and (max-width: 1200px) {
+            .img_b{
+                width: 90%;
+            }
+            .img{
+                width: 40%;
+            }
+            .img img{
+                width: 100%;
+            }
+        }
+        @media screen and (max-width: 600px) {
+            #burger_l{
+                display: block;
+                width: 30px;
+                height: 30px;
+                margin-left: auto;
+                cursor: pointer;
+            }
+            #burger_l img{
+                width: 100%;
+            }
+            .bar{
+                display: none;
+            }
+            nav{
+                position: relative;
+            }
+            #burger:checked + .bar{
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                right: 5%;
+                top: 100%;
+                background-color: rgba(100,180,180,.7)
+            }
+            .bar a{
+                padding: 30px;
+                color: white;
+                border-bottom: 1px solid black;
+            }
+            .img_b{
+                width: 90%;
+            }
+            .img{
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="" id="title">My Website</a>
+        <label for="burger" id="burger_l"><img src="iconfinder_menu-alt_134216.png" alt=""></label>
+        <input type="checkbox" id="burger">
+        <div class="bar">
+            <a href="">Item1</a>
+            <a href="">Item2</a>
+            <a href="">Item3</a>
+            <a href="">Item4</a>
+        </div>
+    </nav>
+    <div class="welcome">
+        Welcome to MyHome
+    </div>
+    <div class="img_block">
+        <div class="img_b">
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+            <div class="img">
+                <div class="fakeimg"></div>
+                <p>title</p>
+            </div>
+        </div>
+    </div>
+</body>
