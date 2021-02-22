@@ -78,6 +78,12 @@
             .img{
                 width: 40%;
             }
+            .img_block .img{
+                margin: 10px 10% 10px 0px;
+            }
+            .img_block .img:nth-child(2n+2){
+                margin-right: 0;
+            }
         }
         @media screen and (max-width: 600px) {
             #burger_l{
@@ -116,8 +122,12 @@
             .img_b{
                 width: 90%;
             }
-            .img{
+            .img_block .img{
                 width: 100%;
+                margin: 0;
+            }
+            .img_block .img:nth-child(4n+4){
+                margin-right: 0;
             }
         }
     </style>
