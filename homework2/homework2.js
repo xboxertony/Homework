@@ -41,6 +41,8 @@ avg({
 function maxProduct(nums){
     let first = -Infinity
     let second = -Infinity
+    let first_min = Infinity
+    let second_min = Infinity
 
     nums.forEach(e=>{
         if(e>first){
@@ -50,9 +52,16 @@ function maxProduct(nums){
         else if(e>second){
             second=e
         }
+        if(e<first_min){
+            second_min = first_min
+            first_min = e
+        }
+        else if(e<second_min){
+            second_min = e
+        }
     });
 
-    console.log(first*second)
+    console.log(Math.max(first*second,first_min*second_min))
 }
 
 maxProduct([5,20,2,6])
