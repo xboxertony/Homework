@@ -212,9 +212,17 @@
                 div.classList.add("img")
                 let child = document.createElement("div")
                 child.classList.add("fakeimg")
-                let n = d.result.results[i].file.search("jpg")
-                let m = d.result.results[i].file.search("png")
-                div.style.backgroundImage = "url("+d.result.results[i].file.slice(0,Math.max(m,n)+3)+")"
+                let n = Infinity;
+                if(d.result.results[i].file.includes("jpg")){
+                    n = Math.min(n,d.result.results[i].file.search("jpg"))
+                }
+                if(d.result.results[i].file.includes("JPG")){
+                    n = Math.min(n,d.result.results[i].file.search("JPG"))
+                }
+                if(d.result.results[i].file.includes("png")){
+                    n = Math.min(n,d.result.results[i].file.search("png"))
+                }
+                child.style.backgroundImage = "url("+d.result.results[i].file.slice(0,n+3)+")"
                 let p = document.createElement("p")
                 p.textContent = d.result.results[i].stitle
                 div.appendChild(child)
