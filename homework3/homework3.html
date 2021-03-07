@@ -36,8 +36,8 @@
             width: 100%;
             height: 300px;
             /* background-image: url("https://picsum.photos/500/500"); */
-            background-position: center;
-            background-size: contain;
+            background-position: bottom;
+            background-size: cover;
         }
         .img_block .img{
             margin: 10px 2% 10px 0px;
@@ -70,6 +70,11 @@
         .icon img{
             height:30px;
             width: 30px;
+        }
+        .button_block{
+                padding: 10px 0;
+                width: 100%;
+                text-align: center;
         }
         @media screen and (max-width: 1200px) {
             .img_b{
@@ -127,6 +132,7 @@
                 margin: 10px 0px;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -180,28 +186,47 @@
             </div> -->
         </div>
     </div>
+    <div class="button_block">
+        <button id="loading">載入更多</button>
+    </div>
     <script>
         let img_block = document.getElementsByClassName("img_b")[0];
+        let start_pic = 0;
+        let last_pic = 8;
+        let data_load;
         fetch("https://data.taipei/api/v1/dataset/36847f3f-deff-4183-a5bb-800737591de5?scope=resourceAquire").then(
             function(data){
                 result = data.json()
                 return result
             }).then(
                 function(data){
-                    for(let i=0;i<8;i++){
-                        let div = document.createElement("div")
-                        div.classList.add("img")
-                        let child = document.createElement("div")
-                        child.classList.add("fakeimg")
-                        let n = data.result.results[i].file.search("jpg")
-                        div.style.backgroundImage = "url("+data.result.results[i].file.slice(0,n+3)+")"
-                        let p = document.createElement("p")
-                        p.textContent = data.result.results[i].stitle
-                        div.appendChild(child)
-                        div.appendChild(p)
-                        img_block.appendChild(div)
-                    }
+                    data_load = data
+                    get_data(data,start_pic,last_pic)
+                    start_pic+=8
+                    last_pic+=8
                 }
-            )
+        )
+        function get_data(d,start,end){
+            for(let i=start;i<end;i++){
+                let div = document.createElement("div")
+                div.classList.add("img")
+                let child = document.createElement("div")
+                child.classList.add("fakeimg")
+                let n = d.result.results[i].file.search("jpg")
+                let m = d.result.results[i].file.search("png")
+                div.style.backgroundImage = "url("+d.result.results[i].file.slice(0,Math.max(m,n)+3)+")"
+                let p = document.createElement("p")
+                p.textContent = d.result.results[i].stitle
+                div.appendChild(child)
+                div.appendChild(p)
+                img_block.appendChild(div)
+            }
+        }
+        let load_pic = document.getElementById("loading");
+        load_pic.addEventListener("click",function(){
+            get_data(data_load,start_pic,last_pic)
+            start_pic+=8
+            last_pic+=8
+        })
     </script>
 </body>
