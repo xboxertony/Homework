@@ -6,6 +6,12 @@ data = data["result"]["results"]
 myfile = open("data.txt","w",encoding="utf-8")
 # l = len(data["result"]["results"])
 for i in range(len(data)):
-    s = data[i]["stitle"]+","+data[i]["longitude"]+","+data[i]["latitude"]+","+data[i]["file"][:data[i]["file"].find("jpg")+3]+"\n"
+    s = ""
+    if ".jpg" in data[i]["file"]:
+        s += data[i]["stitle"]+","+data[i]["longitude"]+","+data[i]["latitude"]+","+data[i]["file"][:data[i]["file"].find(".jpg")+4]+"\n"
+    elif ".JPG" in data[i]["file"]:
+        s += data[i]["stitle"]+","+data[i]["longitude"]+","+data[i]["latitude"]+","+data[i]["file"][:data[i]["file"].find(".JPG")+4]+"\n"
+    else:
+        s += data[i]["stitle"]+","+data[i]["longitude"]+","+data[i]["latitude"]+","+data[i]["file"][:data[i]["file"].find(".png")+4]+"\n"
     myfile.writelines(s)
 myfile.close()
