@@ -1,6 +1,6 @@
 import requests
 import json
-r = requests.get("https://data.taipei/api/v1/dataset/36847f3f-deff-4183-a5bb-800737591de5?scope=resourceAquire")
+r = requests.get("https://padax.github.io/taipei-day-trip-resources/taipei-attractions.json")
 data = json.loads(r.text)
 data = data["result"]["results"]
 myfile = open("data.txt","w",encoding="utf-8")
