@@ -224,7 +224,8 @@
                 }
                 child.style.backgroundImage = "url("+d.result.results[i].file.slice(0,n+3)+")"
                 let p = document.createElement("p")
-                p.textContent = d.result.results[i].stitle
+                let text_title = document.createTextNode(d.result.results[i].stitle)
+                p.appendChild(text_title)
                 div.appendChild(child)
                 div.appendChild(p)
                 img_block.appendChild(div)
