@@ -233,9 +233,11 @@
         }
         let load_pic = document.getElementById("loading");
         load_pic.addEventListener("click",function(){
-            get_data(data_load,start_pic,last_pic)
-            start_pic+=8
-            last_pic+=8
+            if(last_pic+8<=data_load.result.results.length){
+                get_data(data_load,start_pic,last_pic)
+                start_pic+=8
+                last_pic+=8
+            }
         })
     </script>
 </body>
