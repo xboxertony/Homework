@@ -27,10 +27,10 @@ def error():
     return render_template("error.html",session = session)
 
 
-@app.route('/signin', methods=['GET', 'POST'])
+@app.route('/signin', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return redirect(url_for('home'))
+    # if request.method == 'GET':
+    #     return redirect(url_for('home'))
     
     user_id = request.form['user_id']
     if (user_id in users) and (request.form['password'] == users[user_id]['password']):
@@ -42,7 +42,7 @@ def login():
 
 
 
-@app.route('/signout', methods=['GET', 'POST'])
+@app.route('/signout')
 def logout():
     session['user_name'] = False
     session["state"] = "未登入"
