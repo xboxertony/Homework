@@ -1,0 +1,24 @@
+{%extends 'login.html'%}
+{%block style%}
+<style>
+    .login_success{
+        text-align: center;
+    }
+</style>
+{%endblock%}
+
+{%block content%}
+
+
+<div class="header">歡迎光臨，這是會員頁</div>
+<h3 class="login_success">恭喜你成功登入系統</h3>
+
+<div class="logout_block">
+    {% if current_user.is_authenticated %}
+      <a class="nav-link" href="/signout">登出系統</a>
+    {% else %}
+      <a class="nav-link" href="/">登入</a>
+    {% endif %}
+</div>
+
+{%endblock%}
