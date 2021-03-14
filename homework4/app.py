@@ -18,16 +18,25 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def user_loader(user_id):
+    print("from loader")
+    print(user_id)
+    print(request.form.get('user_id'))
     if user_id not in users:
         return
     
+    # if user_id in users and request.form['password'] != users[user_id]['password']:
+    #     return
+    
     user = User()
     user.id = user_id
+    # user.is_authenticated = True
     return user
 
 @login_manager.request_loader
 def request_loader(request):
     user_id = request.form.get('user_id')
+    print("from manager")
+    print(request.form)
     if user_id not in users:
         return
     
@@ -47,6 +56,8 @@ def home():
 
 @app.route('/member')
 def member():
+    print("from member:")
+    print(session)
     if session and session["state"] == "已登入":
         return render_template("member.html")
     else:
@@ -64,13 +75,13 @@ def login():
         return redirect(url_for('home'))
     
     user_id = request.form['user_id']
+    print(request.form.get('user_id') + " from login")
     if (user_id in users) and (request.form['password'] == users[user_id]['password']):
         user = User()
         user.id = user_id
         login_user(user)
         session["user_name"] = user_id
         session["state"] = "已登入"
-        print(session)
         return redirect(url_for('member'))
 
     return redirect(url_for('error'))
@@ -81,9 +92,8 @@ def login():
 def logout():
     logout_user()
     session["state"] = "未登入"
-    print(session)
     return redirect(url_for("home"))
 
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=3000)

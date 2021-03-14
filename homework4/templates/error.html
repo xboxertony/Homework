@@ -11,9 +11,9 @@
 
 
 <div class="header">失敗頁面</div>
-<h3 class="login_fail">帳號密碼輸入錯誤</h3>
 
 <div class="logout_block">
+  <h3 class="login_fail">帳號密碼輸入錯誤</h3>
     {% if current_user.is_authenticated %}
       <a class="nav-link" href="/signout">登出系統</a>
     {% else %}
