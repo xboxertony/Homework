@@ -91,6 +91,7 @@ def login():
 @app.route('/signout', methods=['GET', 'POST'])
 def logout():
     logout_user()
+    session['user_name'] = False
     session["state"] = "未登入"
     return redirect(url_for("home"))
 
