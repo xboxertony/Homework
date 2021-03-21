@@ -16,14 +16,21 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `message`
+-- Table structure for table `user`
 --
 
-LOCK TABLES `message` WRITE;
-/*!40000 ALTER TABLE `message` DISABLE KEYS */;
-INSERT INTO `message` VALUES (1,2,'xxxxxx','2021-03-22 01:39:14'),(2,3,'oooooo','2021-03-22 01:39:14'),(3,1,'我是ply','2021-03-22 01:43:01'),(4,1,'我是ply，再留言一次','2021-03-22 01:43:01');
-/*!40000 ALTER TABLE `message` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `ID` bigint NOT NULL AUTO_INCREMENT COMMENT '獨立編號',
+  `name` varchar(255) COLLATE utf8mb4_0900_as_cs NOT NULL COMMENT '姓名',
+  `username` varchar(255) COLLATE utf8mb4_0900_as_cs NOT NULL COMMENT '帳戶名稱',
+  `password` varchar(255) COLLATE utf8mb4_0900_as_cs NOT NULL COMMENT '帳戶密碼',
+  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '註冊時間',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `user`
@@ -31,8 +38,36 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'test','ply','ply','2021-03-22 01:33:26'),(2,'test1','test1','test1','2021-03-22 01:33:26'),(3,'test2','test2','test2','2021-03-22 01:33:26'),(4,'test3','test3','test3','2021-03-22 01:33:26'),(5,'test4','test4','test4','2021-03-22 01:33:26');
+INSERT INTO `user` VALUES (1,'丁滿','ply','ply','2021-03-22 01:33:26'),(2,'test1','test1','test1','2021-03-22 01:33:26'),(3,'test2','test2','test2','2021-03-22 01:33:26'),(4,'test3','test3','test3','2021-03-22 01:33:26'),(5,'test4','test4','test4','2021-03-22 01:33:26'),(6,'111','111','111','2021-03-22 02:02:52');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `message` (
+  `ID` bigint NOT NULL AUTO_INCREMENT COMMENT '獨立編號',
+  `user_id` bigint NOT NULL COMMENT '留言會員編號',
+  `content` varchar(255) COLLATE utf8mb4_0900_as_cs NOT NULL COMMENT '留言內容',
+  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '留言時間',
+  PRIMARY KEY (`ID`),
+  KEY `user_id_idx` (`user_id`),
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `message`
+--
+
+LOCK TABLES `message` WRITE;
+/*!40000 ALTER TABLE `message` DISABLE KEYS */;
+INSERT INTO `message` VALUES (1,2,'xxxxxx','2021-03-22 01:39:14'),(2,3,'oooooo','2021-03-22 01:39:14'),(3,1,'我是ply','2021-03-22 01:43:01'),(4,1,'我是ply，再留言一次','2021-03-22 01:43:01');
+/*!40000 ALTER TABLE `message` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -44,4 +79,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-22  1:48:49
+-- Dump completed on 2021-03-22  3:10:24
