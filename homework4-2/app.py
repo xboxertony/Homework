@@ -2,14 +2,16 @@ from flask import request, render_template, url_for, redirect , Flask,session
 from datetime import timedelta
 from flask_bcrypt import Bcrypt
 
+# binascii.hexlify(os.urandom(16)).decode()
+
 
 app = Flask(__name__)
 app.secret_key = '26adfff637e8343fd8d2a11a32ff454c'
 app.permanent_session_lifetime = timedelta(days=3)
 bcrypt = Bcrypt(app)
 p_hash = bcrypt.generate_password_hash('ttoooott').decode('utf-8')
-print(p_hash)
-print(bcrypt.check_password_hash(p_hash,"ttoooott"))
+# print(p_hash)
+# print(bcrypt.check_password_hash(p_hash,"ttoooott"))
 
 
 users = {'test': {'password': 'test'}}
@@ -17,7 +19,7 @@ users = {'test': {'password': 'test'}}
 
 @app.before_request
 def login_required():
-    if request.path in ["","/","/signin","/signout","/error"]:
+    if request.path in ["","/","/signin","/signout","/error","/static"]:
         return None
     print(session)
     user = session.get("user_name")
@@ -29,7 +31,8 @@ def login_required():
 
 @app.route('/')
 def home():
-    return render_template("login.html")
+    user = session.get("user_name")
+    return render_template("login.html",user = user)
 
 @app.route('/member')
 def member():
@@ -43,7 +46,10 @@ def member():
 
 @app.route('/error')
 def error():
-    return render_template("error.html",session = session)
+    if not session.get("user_name",""):
+        return render_template("error.html",session = session)
+    else:
+        return redirect(url_for("home"))
 
 
 @app.route('/signin', methods=['POST'])

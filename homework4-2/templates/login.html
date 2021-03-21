@@ -47,6 +47,7 @@
     {%block style%}{%endblock%}
 <body>
     {% block content %}
+    {% if not user or user==False%}
     <div class="header">歡迎光臨，請輸入帳號密碼</div>
     <form method="POST" action="/signin">
         <h3 class="title_login">登入系統</h1>
@@ -60,5 +61,8 @@
         </div>
         <button type="submit">登入</button>
     </form>
+    {% else %}
+    <div class="header">歡迎光臨，{{ user }}</div>
+    {% endif %}
     {%endblock%}
 </body>
