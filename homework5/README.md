@@ -37,7 +37,7 @@ select * from website.user order by time desc;
 ## 時間由近到遠排序指令，第二到四筆
 
 ```sql
-select * from website.user where id between 2 and 4 order by time desc;
+SELECT * FROM website.user order by time desc limit 3 offset 1;
 ```
 
 ![img](https://github.com/xboxertony/Homework/blob/master/homework5/img/%E7%94%B1%E8%BF%91%E5%88%B0%E9%81%A0%E7%AC%AC%E4%BA%8C%E5%88%B0%E5%9B%9B%E7%AD%86.png)
