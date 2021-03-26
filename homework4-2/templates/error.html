@@ -14,6 +14,7 @@
 
 <div class="logout_block">
   <h3 class="login_fail">帳號密碼輸入錯誤</h3>
+    <h4>{{session["error"]}} 次錯誤的登入</h4>
     {% if session["state"]=="已登入" %}
       <a class="nav-link" href="/signout">登出系統</a>
     {% else %}

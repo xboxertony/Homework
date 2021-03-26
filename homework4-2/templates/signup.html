@@ -1,0 +1,16 @@
+{%extends 'login.html'%}
+{%block style%}
+<style>
+    .signup input{
+        margin: 10px 0px;
+    }
+</style>
+{%endblock%}
+{%block content%}
+<div class="header">這是註冊頁面</div>
+<form class="signup" action="/" method="POST">
+    <input type="text" placeholder="請輸入使用者名稱" name="username">
+    <input type="password" placeholder="請輸入密碼" name="password">
+    <input type="submit">
+</form>
+{%endblock%}
