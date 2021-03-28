@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 def home():
     return render_template("login.html")
 
-@app.route('/member')
+@app.route('/member/')
 def member():
     if session and session["state"] == "已登入":
         return render_template("member.html",session = session)
@@ -25,8 +25,9 @@ def member():
         return redirect(url_for('home'))
 
 
-@app.route('/error/<message>')
-def error(message):
+@app.route('/error/')
+def error():
+    message = request.args.get("message")
     return render_template("error.html",session = session,mes = message)
 
 
@@ -38,7 +39,7 @@ def login():
     user_id = request.form['user_id']
     data = user.query.filter_by(username = user_id).first()
     if not data:
-        return redirect(url_for('error',message="帳號密碼輸入錯誤"))
+        return redirect('error/?message=帳號密碼輸入錯誤')
     if request.form['password'] == data.password:
         session["realname"]=data.name
         session["user_name"] = user_id
@@ -46,7 +47,7 @@ def login():
         # session.permanent = True
         return redirect(url_for('member'))
 
-    return redirect(url_for('error',message="帳號密碼輸入錯誤"))
+    return redirect('error/?message=帳號密碼輸入錯誤')
 
 
 class user(db.Model):
@@ -68,9 +69,9 @@ def signup():
     password = request.form.get("password")
     data = user.query.filter_by(username=user_id).first()
     if not username or not user_id or not password:
-        return redirect(url_for("error",message="請勿輸入空值"))
+        return redirect("error/?message=請勿輸入空值")
     if data:
-        return redirect(url_for("error",message="帳號已被註冊"))
+        return redirect("error/?message=帳號已被註冊")
     else:
         new_user = user(username,user_id,password)
         db.session.add(new_user)
