@@ -39,7 +39,7 @@ def login():
     user_id = request.form['user_id']
     data = user.query.filter_by(username = user_id).first()
     if not data:
-        return redirect('error/?message=帳號密碼輸入錯誤')
+        return redirect('error/?message=帳號或密碼輸入錯誤')
     if request.form['password'] == data.password:
         session["realname"]=data.name
         session["user_name"] = user_id
@@ -47,7 +47,7 @@ def login():
         # session.permanent = True
         return redirect(url_for('member'))
 
-    return redirect('error/?message=帳號密碼輸入錯誤')
+    return redirect('error/?message=帳號或密碼輸入錯誤')
 
 
 class user(db.Model):
@@ -71,7 +71,7 @@ def signup():
     if not username or not user_id or not password:
         return redirect("error/?message=請勿輸入空值")
     if data:
-        return redirect("error/?message=帳號已被註冊")
+        return redirect("error/?message=帳號已經被註冊")
     else:
         new_user = user(username,user_id,password)
         db.session.add(new_user)
