@@ -1,0 +1,24 @@
+{%extends 'login.html'%}
+{%block style%}
+<style>
+    .login_fail{
+        text-align: center;
+    }
+</style>
+{%endblock%}
+
+{%block content%}
+
+
+<div class="header">失敗頁面</div>
+
+<div class="logout_block">
+  <h3 class="login_fail">{{mes}}</h3>
+    {% if session["state"]=="已登入" %}
+      <a class="nav-link" href="/signout">登出系統</a>
+    {% else %}
+      <a class="nav-link" href="/">返回首頁</a>
+    {% endif %}
+</div>
+
+{%endblock%}
