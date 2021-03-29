@@ -1,6 +1,8 @@
 from flask import request, render_template, url_for, redirect , Flask,session
 import datetime
 from flask_sqlalchemy import SQLAlchemy
+# from server import app,db
+# from model.user_model import user
 
 
 app = Flask(__name__)
@@ -72,11 +74,10 @@ def signup():
         return redirect("error/?message=請勿輸入空值")
     if data:
         return redirect("error/?message=帳號已經被註冊")
-    else:
-        new_user = user(username,user_id,password)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for("home"))
+    new_user = user(username,user_id,password)
+    db.session.add(new_user)
+    db.session.commit()
+    return redirect(url_for("home"))
 
 
 
