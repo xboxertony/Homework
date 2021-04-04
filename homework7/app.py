@@ -95,6 +95,11 @@ def renew():
     try:
         person = request.get_json()
         p = user.query.filter_by(username=session["user_name"]).first()
+        if not person["name"]:
+            session.pop("renew",None)
+            return json.dumps({
+                "error":True
+            })
         p.name = person["name"]
         db.session.commit()
         session["realname"]=person["name"]
