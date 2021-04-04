@@ -1,0 +1,99 @@
+{%extends 'login.html'%}
+{%block style%}
+<style>
+    .login_success{
+        text-align: center;
+        size: 20px;
+        font-weight: 900;
+    }
+</style>
+{%endblock%}
+
+{%block content%}
+
+
+<div class="header">歡迎光臨，這是會員頁</div>
+
+<div class="logout_block">
+  <p class="login_success">{{session["realname"]}}，歡迎登入系統</p>
+  <br>
+  <p>查詢會員姓名</p>
+  <input type="text" id="search">
+  <button id="submit">查詢</button>
+  <p id="name"></p>
+  <br>
+  <p>更新我的姓名</p>
+  <input type="text" id="new_user">
+  <button id="renew">更新</button>
+  <p id="status"></p>
+  <br>
+    {% if session["state"]=="已登入" %}
+      <a class="nav-link" href="/signout">登出系統</a>
+    {% else %}
+      <a class="nav-link" href="/">登入</a>
+    {% endif %}
+</div>
+
+<script>
+  let sub = document.getElementById("submit")
+  let person = document.getElementById("search")
+  sub.addEventListener("click",function(){
+    fetch(`/api/users?username=${person.value}`).then(
+      (data)=>{
+        return data.json()
+      }
+    ).then((data)=>{
+      if(data.data){
+        document.getElementById("name").innerHTML = data.data["name"]+" ("+data.data["username"]+")"
+      }
+      else{
+        document.getElementById("name").innerHTML = "查無此人"
+      }
+    })
+  })
+
+  function search_name(username){
+    console.log(username)
+    return fetch("/api/users?username="+username).then(
+      (data)=>{
+        return data.json()
+      }
+    ).then((data)=>{
+      return data.data["name"]
+    })
+  }
+
+  let new_user = document.getElementById("new_user")
+  let renew = document.getElementById("renew")
+  renew.addEventListener("click",function(){
+    renew_data()
+  })
+
+  async function renew_data(){
+    let data = await change_name()
+    if(data["ok"]){
+      let name = await search_name("{{session['user_name']}}")
+      document.getElementById("status").innerHTML="更新成功"
+      document.getElementsByClassName("login_success")[0].innerHTML = name +"，歡迎登入系統"
+      new_user.value=""
+    }
+    if(data["error"]){
+      document.getElementById("status").innerHTML="更新失敗"
+      new_user.value=""
+    }
+  }
+
+  function change_name(){
+    return fetch("/api/user",{
+      method:"POST",
+      body:JSON.stringify({"name":new_user.value}),
+      headers:new Headers({
+        "Content-Type":"application/json"
+      })
+    }).then((data)=>{
+      return data.json()
+    })
+  }
+</script>
+
+{%endblock%}
