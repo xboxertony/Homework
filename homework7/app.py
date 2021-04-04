@@ -104,6 +104,7 @@ def renew():
             "ok":True
         })
     except:
+        session.pop("renew",None)
         return json.dumps({
             "error":True
         })
