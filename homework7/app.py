@@ -85,7 +85,6 @@ def signup():
 @app.route('/signout')
 def logout():
     session['user_name'] = False
-    session.pop("renew",None)
     session["state"] = "未登入"
     return redirect(url_for("home"))
 
@@ -96,20 +95,16 @@ def renew():
         person = request.get_json()
         p = user.query.filter_by(username=session["user_name"]).first()
         if not person["name"]:
-            session.pop("renew",None)
             return json.dumps({
                 "error":True
             })
         p.name = person["name"]
         db.session.commit()
         session["realname"]=person["name"]
-        session["renew"]="更新成功"
-        print(session.get("renew"))
         return json.dumps({
             "ok":True
         })
     except:
-        session.pop("renew",None)
         return json.dumps({
             "error":True
         })
