@@ -72,9 +72,9 @@
   async function renew_data(){
     let data = await change_name()
     if(data["ok"]){
-      let name = await search_name("{{session['user_name']}}")
+      // let name = await search_name("{{session['user_name']}}")
       document.getElementById("status").innerHTML="更新成功"
-      document.getElementsByClassName("login_success")[0].innerHTML = name +"，歡迎登入系統"
+      document.getElementsByClassName("login_success")[0].innerHTML = new_user.value +"，歡迎登入系統"
       new_user.value=""
     }
     if(data["error"]){
