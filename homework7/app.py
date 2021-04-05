@@ -112,6 +112,8 @@ def renew():
 
 @app.route("/api/users")
 def find_user():
+    if "state" not in session or session["state"]=="未登入":
+        return redirect("/")
     r = request.args.get("username")
     person = user.query.filter_by(username=r).first()
     if person:
