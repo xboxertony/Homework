@@ -1,13 +1,14 @@
-from flask import request, render_template, url_for, redirect , Flask,session
+from flask import request, render_template, url_for, redirect , Flask,session,jsonify,make_response
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 import json
+expire_date = datetime.datetime.now()+datetime.timedelta(days=90)
 # from server import app,db
 # from model.user_model import user
 
 
 app = Flask(__name__)
-app.secret_key = '26adfff637e8343fd8d2a11a32ff454c'
+# app.secret_key = '26adfff637e8343fd8d2a11a32ff454c'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:pass@localhost:3306/website"
 db = SQLAlchemy(app)
@@ -22,16 +23,20 @@ def home():
 
 @app.route('/member/')
 def member():
-    if session and session["state"] == "已登入":
-        return render_template("member.html",session = session)
+    if request.cookies.get("state")=="已登入":
+        return render_template("member.html",cookie = request.cookies)
     else:
         return redirect(url_for('home'))
+    # if session and session["state"] == "已登入":
+    #     return render_template("member.html",session = session)
+    # else:
+    #     return redirect(url_for('home'))
 
 
 @app.route('/error/')
 def error():
     message = request.args.get("message")
-    return render_template("error.html",session = session,mes = message)
+    return render_template("error.html",cookie = request.cookies,mes = message)
 
 
 @app.route('/signin', methods=['POST'])
@@ -44,11 +49,15 @@ def login():
     if not data:
         return redirect('error/?message=帳號或密碼輸入錯誤')
     if request.form['password'] == data.password:
-        session["realname"]=data.name
-        session["user_name"] = user_id
-        session["state"] = "已登入"
+        response = make_response(redirect(url_for('member')))
+        response.set_cookie(key = "realname",value=data.name,expires=expire_date)
+        response.set_cookie(key = "user_name",value=user_id,expires=expire_date)
+        response.set_cookie(key = "state",value="已登入",expires=expire_date)
+        # session["realname"]=data.name
+        # session["user_name"] = user_id
+        # session["state"] = "已登入"
         # session.permanent = True
-        return redirect(url_for('member'))
+        return response
 
     return redirect('error/?message=帳號或密碼輸入錯誤')
 
@@ -84,35 +93,41 @@ def signup():
 
 @app.route('/signout')
 def logout():
-    session['user_name'] = False
-    session["state"] = "未登入"
-    return redirect(url_for("home"))
+    response = make_response(redirect(url_for('home')))
+    response.set_cookie(key = "realname",value='',expires=0)
+    response.set_cookie(key = "user_name",value='',expires=0)
+    response.set_cookie(key = "state",value='',expires=0)
+    print(request.cookies)
+    # session['user_name'] = False
+    # session["state"] = "未登入"
+    return response
 
 
-@app.route("/api/user",methods=["POST"])
+@app.route("/api/user",methods=["GET","POST"])
 def renew():
     try:
         person = request.get_json()
-        p = user.query.filter_by(username=session["user_name"]).first()
+        p = user.query.filter_by(username=request.cookies.get("user_name")).first()
+        print(person)
         if not person["name"]:
             return json.dumps({
                 "error":True
             })
         p.name = person["name"]
         db.session.commit()
-        session["realname"]=person["name"]
-        return json.dumps({
-            "ok":True
-        })
+        response = jsonify({"ok":True})
+        response.set_cookie(key="realname",value=person["name"],expires=expire_date)
+        # session["realname"]=person["name"]
+        return response
     except:
-        return json.dumps({
+        return jsonify({
             "error":True
         })
 
 
 @app.route("/api/users")
 def find_user():
-    if "state" not in session or session["state"]=="未登入":
+    if "state" not in request.cookies or request.cookies.get("state") =="未登入":
         return redirect("/")
     r = request.args.get("username")
     person = user.query.filter_by(username=r).first()
@@ -122,7 +137,7 @@ def find_user():
             "name":person.name,
             "username":person.username
         }
-        })
+        },ensure_ascii=False)
     else:
         return json.dumps({
             "data":person
