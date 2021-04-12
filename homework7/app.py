@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 # bcrypt = Bcrypt(app)
 
 s = TimedJSONWebSignatureSerializer("abc")
-check = "abc"
+check = "check"
 
 
 
