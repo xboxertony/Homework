@@ -32,13 +32,15 @@ def home():
 
 @app.route('/member/')
 def member():
-    if "token" in request.cookies and s.loads(request.cookies.get("token"))["check"]==check:
-        res = {
-            "realname":s.loads(request.cookies.get("token"))["realname"],
-            "state":"已登入"
-        }
-        return render_template("member.html",cookie = res)
-    else:
+    try:
+        if s.loads(request.cookies.get("token")):
+            res = {
+                "realname":s.loads(request.cookies.get("token"))["realname"],
+                "state":"已登入"
+            }
+            return render_template("member.html",cookie = res)
+        return redirect(url_for('home'))
+    except:
         return redirect(url_for('home'))
     # if session and session["state"] == "已登入":
     #     return render_template("member.html",session = session)
@@ -108,7 +110,7 @@ def logout():
 @app.route("/api/user",methods=["GET","POST"])
 def renew():
     try:
-        if s.loads(request.cookies.get("token"))["check"]!=check:
+        if not s.loads(request.cookies.get("token")):
             return json.dumps({
                 "error":True
             })
@@ -133,7 +135,7 @@ def renew():
 
 @app.route("/api/users")
 def find_user():
-    if "token" not in request.cookies or s.loads(request.cookies.get("token"))["check"]!=check:
+    if not s.loads(request.cookies.get("token")):
         return redirect("/")
     r = request.args.get("username")
     person = user.query.filter_by(username=r).first()
