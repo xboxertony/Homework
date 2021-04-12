@@ -1,7 +1,10 @@
 from flask import request, render_template, url_for, redirect , Flask,jsonify,make_response
+from itsdangerous import TimedJSONWebSignatureSerializer
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 import json
+from flask_bcrypt import Bcrypt
+
 expire_date = datetime.datetime.now()+datetime.timedelta(days=90)
 # from server import app,db
 # from model.user_model import user
@@ -13,6 +16,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:pass@localhost:3306/website"
 db = SQLAlchemy(app)
 
+bcrypt = Bcrypt(app)
+
+s = TimedJSONWebSignatureSerializer("abc")
+
+
 
 # users = {'test': {'password': 'test'}}
 
@@ -23,8 +31,12 @@ def home():
 
 @app.route('/member/')
 def member():
-    if request.cookies.get("state")=="已登入":
-        return render_template("member.html",cookie = request.cookies)
+    if "token" in request.cookies and s.loads(request.cookies.get("token"))["user"]==s.loads(request.cookies.get("token"))["user_name"]:
+        res = {
+            "realname":s.loads(request.cookies.get("token"))["realname"],
+            "state":"已登入"
+        }
+        return render_template("member.html",cookie = res)
     else:
         return redirect(url_for('home'))
     # if session and session["state"] == "已登入":
@@ -36,7 +48,7 @@ def member():
 @app.route('/error/')
 def error():
     message = request.args.get("message")
-    return render_template("error.html",cookie = request.cookies,mes = message)
+    return render_template("error.html",mes = message)
 
 
 @app.route('/signin', methods=['POST'])
@@ -50,13 +62,8 @@ def login():
         return redirect('error/?message=帳號或密碼輸入錯誤')
     if request.form['password'] == data.password:
         response = make_response(redirect(url_for('member')))
-        response.set_cookie(key = "realname",value=data.name,expires=expire_date)
-        response.set_cookie(key = "user_name",value=user_id,expires=expire_date)
-        response.set_cookie(key = "state",value="已登入",expires=expire_date)
-        # session["realname"]=data.name
-        # session["user_name"] = user_id
-        # session["state"] = "已登入"
-        # session.permanent = True
+        response.set_cookie(key = "state",value=bcrypt.generate_password_hash("已登入").decode("utf-8"),expires=expire_date)
+        response.set_cookie(key = "token",value=s.dumps({"user":user_id,"realname":data.name,"user_name":user_id}).decode("utf8"),expires=expire_date)
         return response
 
     return redirect('error/?message=帳號或密碼輸入錯誤')
@@ -94,21 +101,21 @@ def signup():
 @app.route('/signout')
 def logout():
     response = make_response(redirect(url_for('home')))
-    response.set_cookie(key = "realname",value='',expires=0)
-    response.set_cookie(key = "user_name",value='',expires=0)
     response.set_cookie(key = "state",value='',expires=0)
-    print(request.cookies)
-    # session['user_name'] = False
-    # session["state"] = "未登入"
+    response.set_cookie(key = "token",value='',expires=0)
     return response
 
 
 @app.route("/api/user",methods=["GET","POST"])
 def renew():
     try:
+        if s.loads(request.cookies.get("token"))["user"]!=s.loads(request.cookies.get("token"))["user_name"]:
+            return json.dumps({
+                "error":True
+            })
         person = request.get_json()
-        p = user.query.filter_by(username=request.cookies.get("user_name")).first()
-        print(person)
+        username = s.loads(request.cookies.get("token"))["user_name"]
+        p = user.query.filter_by(username=username).first()
         if not person["name"]:
             return json.dumps({
                 "error":True
@@ -116,7 +123,7 @@ def renew():
         p.name = person["name"]
         db.session.commit()
         response = jsonify({"ok":True})
-        response.set_cookie(key="realname",value=person["name"],expires=expire_date)
+        response.set_cookie(key = "token",value=s.dumps({"user":username,"realname":person["name"],"user_name":username}).decode("utf8"),expires=expire_date)
         # session["realname"]=person["name"]
         return response
     except:
@@ -127,7 +134,7 @@ def renew():
 
 @app.route("/api/users")
 def find_user():
-    if "state" not in request.cookies or request.cookies.get("state") =="未登入":
+    if "token" not in request.cookies or s.loads(request.cookies.get("token"))["user"]!=s.loads(request.cookies.get("token"))["user_name"]:
         return redirect("/")
     r = request.args.get("username")
     person = user.query.filter_by(username=r).first()
