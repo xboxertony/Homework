@@ -44,25 +44,31 @@
         text-align: center;
         margin-top:10px;
     }
+    p{
+        text-align: center;
+    }
 </style>
     {%block style%}{%endblock%}
 <body>
     {% block content %}
     <div class="header">歡迎光臨，請註冊登入系統</div>
-    <form method="POST" action="/signup" style="border-bottom: 1px solid #000;">
+    <form method="POST" action="/signup" style="border-bottom: 1px solid #000;" id="signup">
         <h3 class="title_login">註冊帳號</h1>
         <div class="id">
             <label for="username">姓名:</label>
-            <input type="text" id="user_id" name="username">
+            <input type="text" id="name_signup" name="username">
         </div>
+        <p class="show_error" id="error_show_name"></p>
         <div class="id">
             <label for="user_id">帳號:</label>
-            <input type="text" id="user_id" name="user_id">
+            <input type="text" id="user_id_signup" name="user_id">
         </div>
+        <p class="show_error" id="error_show_id"></p>
         <div class="password">
             <label for="password">密碼:</label>
-            <input type="password" id="password" name="password">
+            <input type="password" id="password_signup" name="password">
         </div>
+        <p class="show_error" id="error_show_password"></p>
         <button type="submit">註冊</button>
     </form>
     <form method="POST" action="/signin">
@@ -77,5 +83,36 @@
         </div>
         <button type="submit">登入</button>
     </form>
+    <script>
+        let signup = document.getElementById("name_signup");
+        let signid = document.getElementById("user_id_signup");
+        let signpassword = document.getElementById("password_signup");
+
+        let error_name = document.getElementById("error_show_name")
+        let error_password = document.getElementById("error_show_password")
+        let error_id = document.getElementById("error_show_id")
+
+        let check_empty = (check_item,error_show,word)=>{
+            error_show.innerHTML="";
+            if(check_item.value===""){
+                error_show.innerHTML = word+"不得為空"
+            }
+        }
+
+        signup.addEventListener("blur",function(e){
+            check_empty(e.target,error_name,"姓名")
+        })
+
+        signid.addEventListener("blur",function(e){
+            check_empty(e.target,error_id,"帳號")
+        })
+
+        signpassword.addEventListener("blur",function(e){
+            check_empty(e.target,error_password,"密碼")
+        })
+
+
+
+    </script>
     {%endblock%}
 </body>
