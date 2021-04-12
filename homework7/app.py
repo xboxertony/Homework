@@ -19,6 +19,7 @@ db = SQLAlchemy(app)
 # bcrypt = Bcrypt(app)
 
 s = TimedJSONWebSignatureSerializer("abc")
+check = "abc"
 
 
 
@@ -31,7 +32,7 @@ def home():
 
 @app.route('/member/')
 def member():
-    if "token" in request.cookies and s.loads(request.cookies.get("token"))["user"]==s.loads(request.cookies.get("token"))["user_name"]:
+    if "token" in request.cookies and s.loads(request.cookies.get("token"))["check"]==check:
         res = {
             "realname":s.loads(request.cookies.get("token"))["realname"],
             "state":"已登入"
@@ -62,7 +63,7 @@ def login():
         return redirect('error/?message=帳號或密碼輸入錯誤')
     if request.form['password'] == data.password:
         response = make_response(redirect(url_for('member')))
-        response.set_cookie(key = "token",value=s.dumps({"user":user_id,"realname":data.name,"user_name":user_id}).decode("utf8"),expires=expire_date)
+        response.set_cookie(key = "token",value=s.dumps({"user_name":user_id,"realname":data.name,"check":check}).decode("utf8"),expires=expire_date)
         return response
 
     return redirect('error/?message=帳號或密碼輸入錯誤')
@@ -107,7 +108,7 @@ def logout():
 @app.route("/api/user",methods=["GET","POST"])
 def renew():
     try:
-        if s.loads(request.cookies.get("token"))["user"]!=s.loads(request.cookies.get("token"))["user_name"]:
+        if s.loads(request.cookies.get("token"))["check"]!=check:
             return json.dumps({
                 "error":True
             })
@@ -121,7 +122,7 @@ def renew():
         p.name = person["name"]
         db.session.commit()
         response = jsonify({"ok":True})
-        response.set_cookie(key = "token",value=s.dumps({"user":username,"realname":person["name"],"user_name":username}).decode("utf8"),expires=expire_date)
+        response.set_cookie(key = "token",value=s.dumps({"user_name":username,"realname":person["name"],"check":check}).decode("utf8"),expires=expire_date)
         # session["realname"]=person["name"]
         return response
     except:
@@ -132,7 +133,7 @@ def renew():
 
 @app.route("/api/users")
 def find_user():
-    if "token" not in request.cookies or s.loads(request.cookies.get("token"))["user"]!=s.loads(request.cookies.get("token"))["user_name"]:
+    if "token" not in request.cookies or s.loads(request.cookies.get("token"))["check"]!=check:
         return redirect("/")
     r = request.args.get("username")
     person = user.query.filter_by(username=r).first()
