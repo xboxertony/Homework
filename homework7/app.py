@@ -3,7 +3,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 import json
-from flask_bcrypt import Bcrypt
+# from flask_bcrypt import Bcrypt
 
 expire_date = datetime.datetime.now()+datetime.timedelta(days=90)
 # from server import app,db
@@ -16,7 +16,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:pass@localhost:3306/website"
 db = SQLAlchemy(app)
 
-bcrypt = Bcrypt(app)
+# bcrypt = Bcrypt(app)
 
 s = TimedJSONWebSignatureSerializer("abc")
 
@@ -62,7 +62,6 @@ def login():
         return redirect('error/?message=帳號或密碼輸入錯誤')
     if request.form['password'] == data.password:
         response = make_response(redirect(url_for('member')))
-        response.set_cookie(key = "state",value=bcrypt.generate_password_hash("已登入").decode("utf-8"),expires=expire_date)
         response.set_cookie(key = "token",value=s.dumps({"user":user_id,"realname":data.name,"user_name":user_id}).decode("utf8"),expires=expire_date)
         return response
 
@@ -101,7 +100,6 @@ def signup():
 @app.route('/signout')
 def logout():
     response = make_response(redirect(url_for('home')))
-    response.set_cookie(key = "state",value='',expires=0)
     response.set_cookie(key = "token",value='',expires=0)
     return response
 
