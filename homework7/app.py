@@ -96,7 +96,7 @@ def signup():
     new_user = user(username,user_id,password)
     db.session.add(new_user)
     db.session.commit()
-    return redirect(url_for("home"))
+    return redirect("/?message=註冊成功")
 
 
 

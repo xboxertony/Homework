@@ -111,7 +111,18 @@
             check_empty(e.target,error_password,"密碼")
         })
 
+        let url = decodeURIComponent(location.href);
 
+        if(url.indexOf("?")!=-1&&url.indexOf("message")!=-1){
+            let url = location.href
+            alert(decodeURIComponent(url.split("?")[1].split("=")[1]))
+        }
+
+        // let signup_form = document.getElementById("signup")
+
+        // signup_form.addEventListener("submit",(e)=>{
+        //     e.preventDefault()
+        // })
 
     </script>
     {%endblock%}
